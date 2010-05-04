@@ -1,0 +1,23 @@
+/* A simple shell that puts a fix with helvetical font
+ * with the content fixed width in the center
+ */
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: large;
+    text-align: center;
+}
+
+h1 {
+    font-family: georgia,'bitstream vera sans serif','lucida grande',helvetica,verdana,sans-serif
+}
+
+h2 {
+    font-size: x-large;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.main {
+    margin: 0 auto;
+    width: 600px;
+}

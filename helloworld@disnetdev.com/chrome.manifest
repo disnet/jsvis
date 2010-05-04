@@ -1,0 +1,2 @@
+content helloworld chrome/content/helloworld/ xpcnativewrappers=no
+overlay chrome://firebug/content/firebugOverlay.xul         chrome://helloworld/content/helloWorld.xul

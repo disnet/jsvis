@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>JS Visualization</title>
+    <link type="text/css" rel="stylesheet" href="css/reset.css"/>
+    <link type="text/css" rel="stylesheet" href="css/base.css"/>
+    <link type="text/css" rel="stylesheet" href="css/main.css"/>
+
+    <link type="text/css" rel="stylesheet" href="css/vis.css"/>
+
+    <script type="text/javascript" src="scripts/build/yahoo/yahoo.js"></script>
+    <script type="text/javascript" src="scripts/build/event/event.js"></script>
+    <script type="text/javascript" src="scripts/build/dom/dom.js"></script>
+
+    <script type="text/javascript" src="scripts/build/calendar/calendar.js"></script>
+    <link type="text/css" rel="stylesheet" href="scripts/build/calendar/assets/skins/sam/calendar.css"/>
+
+    <script type="text/javascript" src="scripts/Jit/jit.js"></script>
+
+    <script type="text/javascript" src="scripts/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="scripts/main.js"></script>
+
+    <script>
+      YAHOO.namespace("example.calendar");
+      YAHOO.example.calendar.init = function() {
+        YAHOO.example.calendar.call = new YAHOO.widget.Calendar("call", "callContainer");
+        YAHOO.example.calendar.call.render();
+      }
+      YAHOO.util.Event.onDOMReady(YAHOO.example.calendar.init);
+    </script>
+  </head>
+  <body>
+
+    <div class="main">
+
+      <div id="callContainer"></div>
+      <div style="clear:both"></div>
+
+      <div id="infovis"></div>
+
+    </div>
+
+  </body>
+</html>
+
