@@ -11,6 +11,7 @@
     cursor:pointer;  
     font-weight:bold;  
     opacity:0.9;  
+    font-size: xx-small;
 }  
   
 .node:hover {  
@@ -18,5 +19,6 @@
     color: #222;  
     background-color:white;  
     font-weight:bold;  
+    font-size: large;
     opacity:1;  
 }  

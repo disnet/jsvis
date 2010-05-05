@@ -15,7 +15,9 @@ function initVis(json) {
         color: '#772277'
       },
       onCreateLabel: function(el, node) {
-      el.innerHTML = node.name;
+        if(node.data.level <= 1) {
+          el.innerHTML = node.name;
+        }
         el.onclick = function() {
           rgraph.onClick(node.id);
         };
@@ -26,25 +28,36 @@ function initVis(json) {
 }
 
 function gatherData() {
-  var i = nodeCount = 0;
-  var json = {
-    'id': 'node' + i++,
-    'name': 'window',
-    'data': {},
-    'children': []
-  };
+  var i = 0;
+  var recurseDepth = 0;
 
-  for(obj in window) {
-    var child = {};
-    if(ignored.indexOf(obj.toString()) == -1) {
-      child['id'] = 'node' + i++;
-      child['name'] = obj.toString();
-      child['data'] = {};
-      child['children'] = [];
-      json['children'].push(child);
+  function constructJsonNode(obj, name) {
+    var currentDepth = recurseDepth++;
+    if(currentDepth > 2) {
+      return null;
     }
+
+    var children = [];
+    for(child in obj) {
+      // right idea but the primitives could recurse forever
+      if(ignored.indexOf(child) == -1 && obj[child] !== undefined && typeof obj !== 'string') {
+        var newChild = constructJsonNode(obj[child], child);
+        if(newChild !== null) {
+          children.push(newChild); 
+        }
+      }
+    }
+
+    recurseDepth = currentDepth;
+    return {
+      'id': 'node' + i++,
+      'name': name,
+      'data': {'level': recurseDepth},
+      'children': children
+    };
   }
-  return json;
+
+  return constructJsonNode(window, "window");
 }
 
 $(document).ready(function() {
