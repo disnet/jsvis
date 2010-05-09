@@ -1,23 +1,28 @@
+function isDomElement(obj) {
+  return obj instanceof HTMLElement;
+}
+
 function initVis(json) {
   var canvas = new Canvas('mycanvas', {
     'injectInto': 'infovis',
-    'width' : 900,
-    'height': 500
+    'width' : 1600,
+    'height': 1600
     });
     
   var rgraph = new RGraph(canvas, {
       interpolation: 'linear',
       levelDistance: 100,
       Node: {
-        color: '#ccddee'
+        color: '#ccddee',
+        dim: 1
       },
       Edge: {
         color: '#772277'
       },
       onCreateLabel: function(el, node) {
-        if(node.data.level <= 1) {
+      //  if(node.data.level <= 2) {
           el.innerHTML = node.name;
-        }
+       // }
         el.onclick = function() {
           rgraph.onClick(node.id);
         };
@@ -28,29 +33,64 @@ function initVis(json) {
 }
 
 function gatherData() {
-  var i = 0;
+  var node_index = 0;
   var recurseDepth = 0;
+  var MAX_ARRAY_LENGTH = 30;
+  var MAX_DEPTH = 10;
+  var visited_refs = [];
 
   function constructJsonNode(obj, name) {
     var currentDepth = recurseDepth++;
-    if(currentDepth > 2) {
+    var child_index = 0;
+
+    if(currentDepth > MAX_DEPTH) {
       return null;
     }
+    // prevent circular refs or dup refs (note that this could be seen as wrong--don't I want to know that $ is the same as jQuery?)
+    if(visited_refs.indexOf(obj) != -1) { 
+      return null;
+    }
+    visited_refs.push(obj);
 
     var children = [];
+    var childObj;
     for(child in obj) {
-      // right idea but the primitives could recurse forever
-      if(ignored.indexOf(child) == -1 && obj[child] !== undefined && typeof obj !== 'string') {
-        var newChild = constructJsonNode(obj[child], child);
+      try{
+        childObj = obj[child];
+      }
+      catch(e) {
+        // oops, can't touch that
+        childObj = undefined;
+      }
+
+      // ignoring DOM elements (really big tree)
+      if(ignored.indexOf(child) == -1 
+          && childObj !== undefined 
+          && typeof obj !== 'string'
+          && !isDomElement(childObj)) {
+
+        // might want to handle arrays (could be lot's o numbers) differently
+        if(obj instanceof Array && child_index > MAX_ARRAY_LENGTH) {
+          var etcChild = constructJsonNode(childObj, "...");
+          recurseDepth = currentDepth;
+          if(etcChild !== null) {
+            children.push(etcChild);
+          }
+          break;
+        }
+
+        var newChild = constructJsonNode(childObj, child);
+        recurseDepth = currentDepth;
         if(newChild !== null) {
           children.push(newChild); 
         }
+        child_index++;
       }
     }
 
     recurseDepth = currentDepth;
     return {
-      'id': 'node' + i++,
+      'id': 'node' + node_index++,
       'name': name,
       'data': {'level': recurseDepth},
       'children': children
@@ -60,11 +100,18 @@ function gatherData() {
   return constructJsonNode(window, "window");
 }
 
-$(document).ready(function() {
+function begin() {
+  var i;
+  for(i = 0; i < 1000; i++){
+    LONG_ARRAY.push(i);
+  } 
   var json = gatherData();
   initVis(json);
-    
-});
+}
+
+$(document).ready(begin);
+
+var LONG_ARRAY = [];
 
 var ignored = [
 "ignored",

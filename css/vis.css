@@ -1,7 +1,7 @@
 /* style for the visualization container */  
 #infovis {  
-    width:900px;  
-    height:500px;  
+    width:1600px;  
+    height:1600px;  
     background-color:#222;  
 }  
 /* style for node labels */  
@@ -10,7 +10,7 @@
     background-color:transparent;  
     cursor:pointer;  
     font-weight:bold;  
-    opacity:0.9;  
+    opacity:0.5;  
     font-size: xx-small;
 }  
   
@@ -20,5 +20,6 @@
     background-color:white;  
     font-weight:bold;  
     font-size: large;
-    opacity:1;  
+    opacity:1.0;  
+    z-index: 99; /* make sure hover label is on top */
 }  
