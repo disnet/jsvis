@@ -1,7 +1,7 @@
 /* style for the visualization container */  
 #infovis {  
-    width:1600px;  
-    height:1600px;  
+    width:800px;  
+    height:600px;  
     background-color:#222;  
 }  
 /* style for node labels */  
@@ -23,3 +23,24 @@
     opacity:1.0;  
     z-index: 99; /* make sure hover label is on top */
 }  
+
+div.node_function {
+  color: cyan;
+}
+div.node_function:hover {
+  background-color:cyan;
+}
+
+div.node_number {
+  color: lime;
+}
+div.node_number:hover {
+  background-color:lime;
+}
+
+div.node_string {
+  color: goldenrod;
+}
+div.node_string:hover {
+  background-color:goldenrod;
+}

@@ -4,6 +4,7 @@
     <title>JS Visualization</title>
     <link type="text/css" rel="stylesheet" href="css/reset.css"/>
     <link type="text/css" rel="stylesheet" href="css/base.css"/>
+    <link type="text/css" rel="stylesheet" href="css/jquery-ui-1.8.1.custom.css"/>
     <link type="text/css" rel="stylesheet" href="css/main.css"/>
 
     <link type="text/css" rel="stylesheet" href="css/vis.css"/>
@@ -18,6 +19,7 @@
     <script type="text/javascript" src="scripts/Jit/jit.js"></script>
 
     <script type="text/javascript" src="scripts/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="scripts/jquery-ui-1.8.1.custom.min.js"></script>
     <script type="text/javascript" src="scripts/main.js"></script>
 
     <script>
@@ -37,6 +39,22 @@
       <div style="clear:both"></div>
 
       <div id="infovis"></div>
+
+      <div id="controls">
+        <form class="control">
+          <div>Vis Width: <input type="text" name="width" /> </div>
+          <div>Vis Height: <input type="text" name="height" /> </div>
+          <div>Max Depth: <input type="text" name="depth" /></div>
+          <div>Starting Object: <input type="text" name="start" /></div>
+          <div>Coloring: <input type="checkbox" name="coloring" /></div>
+          <div><input id="btnRefresh" type="button" name="refresh" value="refresh" /></div>
+          <div class="node_function">functions</div>
+          <div class="node_number">numbers</div>
+          <div class="node_string">strings</div>
+          <div style="color: lightgray">other objects</div>
+        </form>
+      
+      </div>
 
     </div>
 

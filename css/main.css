@@ -21,3 +21,24 @@ h2 {
     /*margin: 0 auto;*/
     width: 600px;
 }
+
+#controls {
+  position:absolute;
+  top: 40px;
+  left: 40px;
+  width: 200px;
+  height: 200px;
+  background-color: slategray;
+  border: 2px solid white;
+}
+
+.control {
+  font-size: x-small;
+  text-align: right;
+}
+
+.control div {
+  margin-top: 5px;
+  margin-right: 5px;
+}
+

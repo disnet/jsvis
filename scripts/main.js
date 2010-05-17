@@ -1,15 +1,25 @@
+var JSVIS = {
+  width: 1400,
+  height: 730,
+  coloring: true,
+  starting_object: {obj:window, name: "window"},
+  canvas: null,
+  graph: null,
+  max_depth: 2
+};
+
 function isDomElement(obj) {
   return obj instanceof HTMLElement;
 }
 
 function initVis(json) {
-  var canvas = new Canvas('mycanvas', {
+  JSVIS.canvas = new Canvas('mycanvas', {
     'injectInto': 'infovis',
-    'width' : 1600,
-    'height': 1600
+    'width' : JSVIS.width,
+    'height': JSVIS.height
     });
     
-  var rgraph = new RGraph(canvas, {
+  JSVIS.graph = new RGraph(JSVIS.canvas, {
       interpolation: 'linear',
       levelDistance: 100,
       Node: {
@@ -20,23 +30,25 @@ function initVis(json) {
         color: '#772277'
       },
       onCreateLabel: function(el, node) {
-      //  if(node.data.level <= 2) {
-          el.innerHTML = node.name;
-       // }
+        el.innerHTML = node.name;
+        if(JSVIS.coloring) {
+          $(el).addClass("node_" + node.data.type);
+        }
         el.onclick = function() {
-          rgraph.onClick(node.id);
+          JSVIS.graph.onClick(node.id);
         };
       }
     });
-  rgraph.loadJSON(json);
-  rgraph.refresh();
+  JSVIS.graph.loadJSON(json);
+  JSVIS.graph.refresh();
 }
+
 
 function gatherData() {
   var node_index = 0;
   var recurseDepth = 0;
   var MAX_ARRAY_LENGTH = 30;
-  var MAX_DEPTH = 10;
+  var MAX_DEPTH = JSVIS.max_depth;
   var visited_refs = [];
 
   function constructJsonNode(obj, name) {
@@ -44,10 +56,12 @@ function gatherData() {
     var child_index = 0;
 
     if(currentDepth > MAX_DEPTH) {
+      recurseDepth = currentDepth;
       return null;
     }
     // prevent circular refs or dup refs (note that this could be seen as wrong--don't I want to know that $ is the same as jQuery?)
     if(visited_refs.indexOf(obj) != -1) { 
+      recurseDepth = currentDepth;
       return null;
     }
     visited_refs.push(obj);
@@ -72,7 +86,6 @@ function gatherData() {
         // might want to handle arrays (could be lot's o numbers) differently
         if(obj instanceof Array && child_index > MAX_ARRAY_LENGTH) {
           var etcChild = constructJsonNode(childObj, "...");
-          recurseDepth = currentDepth;
           if(etcChild !== null) {
             children.push(etcChild);
           }
@@ -80,7 +93,6 @@ function gatherData() {
         }
 
         var newChild = constructJsonNode(childObj, child);
-        recurseDepth = currentDepth;
         if(newChild !== null) {
           children.push(newChild); 
         }
@@ -89,24 +101,78 @@ function gatherData() {
     }
 
     recurseDepth = currentDepth;
+    var data_type = typeof obj;
     return {
       'id': 'node' + node_index++,
       'name': name,
-      'data': {'level': recurseDepth},
+      'data': {'level': recurseDepth, type: data_type },
       'children': children
     };
   }
 
-  return constructJsonNode(window, "window");
+  return constructJsonNode(JSVIS.starting_object.obj, JSVIS.starting_object.name);
+}
+
+function refreshVis() {
+  $("#infovis").css("width", JSVIS.width);
+  $("#infovis").css("height", JSVIS.height);
+
+  JSVIS.canvas.resize(JSVIS.width, JSVIS.height);
+  JSVIS.graph.fx.clearLabels(true);
+  JSVIS.graph.loadJSON(JSVIS.json);
+  JSVIS.graph.refresh();
+}
+
+function initControls() {
+  $("#controls").draggable();
+  $(".control input[name='width']").val(JSVIS.width);
+  $(".control input[name='height']").val(JSVIS.height);
+  $(".control input[name='depth']").val(JSVIS.max_depth);
+  $(".control input[name='start']").val(JSVIS.starting_object.name);
+  $(".control input[name='coloring']").attr("checked", JSVIS.coloring);
+
+  $("#infovis").css("width", JSVIS.width);
+  $("#infovis").css("height", JSVIS.height);
+
+  $("#controls").keypress(function(e) {
+      if(e.which === 13) {
+        $("#btnRefresh").trigger("click");
+      }
+      });
+
+  $("#btnRefresh").click(function(e) {
+      var width = $(".control input[name='width']").val();
+      var height = $(".control input[name='height']").val();
+      var depth = $(".control input[name='depth']").val();
+      var start = $(".control input[name='start']").val();
+      var coloring = $(".control input[name='coloring']").attr("checked");
+      JSVIS.width = parseInt(width);
+      JSVIS.height = parseInt(height);
+      JSVIS.coloring = coloring;
+
+
+      if(parseInt(depth) !== JSVIS.max_depth
+          || start !== JSVIS.starting_object.name) {
+        JSVIS.starting_object.name = start;
+        JSVIS.starting_object.obj = window[start];
+        JSVIS.max_depth = parseInt(depth);
+        JSVIS.json = gatherData();
+      }
+      else {
+        JSVIS.max_dpeth = parseInt(depth);
+      }
+      refreshVis();
+      });
 }
 
 function begin() {
+  initControls();
   var i;
   for(i = 0; i < 1000; i++){
     LONG_ARRAY.push(i);
   } 
-  var json = gatherData();
-  initVis(json);
+  JSVIS.json = gatherData();
+  initVis(JSVIS.json);
 }
 
 $(document).ready(begin);
