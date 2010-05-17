@@ -68,36 +68,42 @@ function gatherData() {
 
     var children = [];
     var childObj;
-    for(child in obj) {
-      try{
-        childObj = obj[child];
-      }
-      catch(e) {
-        // oops, can't touch that
-        childObj = undefined;
-      }
+    try {
+      for(child in obj) {
+        try{
+          childObj = obj[child];
+        }
+        catch(e) {
+          // oops, can't touch that
+          childObj = undefined;
+        }
 
-      // ignoring DOM elements (really big tree)
-      if(ignored.indexOf(child) == -1 
-          && childObj !== undefined 
-          && typeof obj !== 'string'
-          && !isDomElement(childObj)) {
+        // ignoring DOM elements (really big tree)
+        if(ignored.indexOf(child) == -1 
+            && childObj !== undefined 
+            && typeof obj !== 'string'
+            && !isDomElement(childObj)) {
 
-        // might want to handle arrays (could be lot's o numbers) differently
-        if(obj instanceof Array && child_index > MAX_ARRAY_LENGTH) {
-          var etcChild = constructJsonNode(childObj, "...");
-          if(etcChild !== null) {
-            children.push(etcChild);
+          // might want to handle arrays (could be lot's o numbers) differently
+          if(obj instanceof Array && child_index > MAX_ARRAY_LENGTH) {
+            var etcChild = constructJsonNode(childObj, "...");
+            if(etcChild !== null) {
+              children.push(etcChild);
+            }
+            break;
           }
-          break;
-        }
 
-        var newChild = constructJsonNode(childObj, child);
-        if(newChild !== null) {
-          children.push(newChild); 
+          var newChild = constructJsonNode(childObj, child);
+          if(newChild !== null) {
+            children.push(newChild); 
+          }
+          child_index++;
         }
-        child_index++;
       }
+    }
+    catch(e) {
+      console.log("Exception for node: " + name);
+      console.log(e);
     }
 
     recurseDepth = currentDepth;
@@ -135,7 +141,7 @@ function initControls() {
   $("#infovis").css("height", JSVIS.height);
 
   $("#controls").keypress(function(e) {
-      if(e.which === 13) {
+      if(e.which === 13) { // enter
         $("#btnRefresh").trigger("click");
       }
       });
@@ -149,7 +155,6 @@ function initControls() {
       JSVIS.width = parseInt(width);
       JSVIS.height = parseInt(height);
       JSVIS.coloring = coloring;
-
 
       if(parseInt(depth) !== JSVIS.max_depth
           || start !== JSVIS.starting_object.name) {
