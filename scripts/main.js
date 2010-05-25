@@ -59,7 +59,7 @@ function gatherData() {
       recurseDepth = currentDepth;
       return null;
     }
-    // prevent circular refs or dup refs (note that this could be seen as wrong--don't I want to know that $ is the same as jQuery?)
+    // prevent circular refs or dup refs (note this could be wrong--don't I want to know that $ is the same as jQuery?)
     if(visited_refs.indexOf(obj) != -1) { 
       recurseDepth = currentDepth;
       return null;
@@ -170,6 +170,7 @@ function initControls() {
       });
 }
 
+
 function begin() {
   initControls();
   var i;
@@ -178,6 +179,11 @@ function begin() {
   } 
   JSVIS.json = gatherData();
   initVis(JSVIS.json);
+  $("#callContainer").click(function() { 
+      JSVIS.next_json = gatherData();
+      console.log(JSVIS.json)
+      console.log(JSVIS.next_json)
+  });
 }
 
 $(document).ready(begin);
