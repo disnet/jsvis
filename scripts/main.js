@@ -172,11 +172,8 @@ function initControls() {
 
 
 function begin() {
-  initControls();
   var i;
-  for(i = 0; i < 1000; i++){
-    LONG_ARRAY.push(i);
-  } 
+  initControls();
   JSVIS.json = gatherData();
   initVis(JSVIS.json);
   $("#callContainer").click(function() { 
@@ -184,6 +181,11 @@ function begin() {
       console.log(JSVIS.json)
       console.log(JSVIS.next_json)
   });
+
+  for(i = 0; i < 1000; i++){
+    LONG_ARRAY.push(i);
+  } 
+
 }
 
 $(document).ready(begin);
