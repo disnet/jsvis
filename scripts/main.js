@@ -59,10 +59,11 @@ var JSVIS = {
         return null;
       }
       // prevent circular refs or dup refs (note this could be wrong--don't I want to know that $ is the same as jQuery?)
-      if(visited_refs.indexOf(obj) != -1) { 
+      /*if(visited_refs.indexOf(obj) != -1) { 
         recurseDepth = currentDepth;
         return null;
       }
+      */
       visited_refs.push(obj);
 
       var children = [];
@@ -73,7 +74,7 @@ var JSVIS = {
             childObj = obj[child];
           }
           catch(e) {
-            // oops, can't touch that
+            // oops, can't touch that (hammer time)
             childObj = undefined;
           }
 
@@ -108,7 +109,7 @@ var JSVIS = {
       recurseDepth = currentDepth;
       var data_type = typeof obj;
       return {
-        'id': 'node' + node_index++,
+        'id': name,
         'name': name,
         'data': {'level': recurseDepth, type: data_type },
         'children': children
@@ -189,8 +190,14 @@ var JSVIS = {
 
     $("#changeList a").click(function(e) {
       var index = parseInt($(e.target).attr("data-index"));
-      that.json = that.json_list[index];
-      that.refreshVis();
+      var newJson = that.json_list[index];
+      console.log(newJson);
+      if(newJson.name === that.json.name) {
+        newJson.id = that.json.id;
+        that.graph.op.morph(newJson, {type: 'fade'});
+      }
+      //that.refreshVis();
+      //that.graph.op.morph(newJson, {type: 'fade'});
     });
   }
 };
