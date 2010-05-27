@@ -32,6 +32,16 @@ h2 {
   border: 2px solid white;
 }
 
+#changeList {
+  position:absolute;
+  top: 250px;
+  left: 40px;
+  width: 200px;
+  height: 200px;
+  background-color: slategray;
+  border: 2px solid white;
+}
+
 .control {
   font-size: x-small;
   text-align: right;

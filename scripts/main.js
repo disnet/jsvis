@@ -10,6 +10,7 @@ var JSVIS = {
   canvas: null,
   graph: null,
   max_depth: 2,
+  json_list: [],
 
   initVis : function(json) {
     this.canvas = new Canvas('mycanvas', {
@@ -170,19 +171,27 @@ var JSVIS = {
 
   begin : function() {
     var i;
+    var that = this;
     this.initControls();
     this.json = this.gatherData();
+    this.json_list.push(this.json);
     this.initVis(this.json);
-    $("#callContainer").click(function() { 
-        this.next_json = this.gatherData();
-        console.log(this.json)
-        console.log(this.next_json)
-    });
 
     for(i = 0; i < 1000; i++){
       LONG_ARRAY.push(i);
     } 
 
+    this.json_list.push(this.gatherData());
+
+    $.each(this.json_list, function(i, el) {
+      $("#changeList ul").append("<li><a data-index='" + i + "' href='#'>" + i + "</a></li>");
+    });
+
+    $("#changeList a").click(function(e) {
+      var index = parseInt($(e.target).attr("data-index"));
+      that.json = that.json_list[index];
+      that.refreshVis();
+    });
   }
 };
 
