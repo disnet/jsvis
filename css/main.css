@@ -27,14 +27,14 @@ h2 {
   top: 40px;
   left: 40px;
   width: 200px;
-  height: 200px;
+  height: 215px;
   background-color: slategray;
   border: 2px solid white;
 }
 
 #changeList {
   position:absolute;
-  top: 250px;
+  top: 265px;
   left: 40px;
   width: 200px;
   height: 200px;

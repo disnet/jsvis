@@ -2,10 +2,15 @@ function isDomElement(obj) {
   return obj instanceof HTMLElement;
 }
 
+Array.prototype.contains = function(obj) {
+  return this.indexOf(obj) != -1
+}
+
 var JSVIS = {
   width: 1400,
   height: 730,
   coloring: true,
+  no_show_dups: true,
   starting_object: {obj:window, name: "window"},
   canvas: null,
   graph: null,
@@ -49,22 +54,24 @@ var JSVIS = {
     var MAX_ARRAY_LENGTH = 30;
     var MAX_DEPTH = this.max_depth;
     var visited_refs = [];
+    var visited_names = [];
+    var unique_id = 0;
 
-    function constructJsonNode(obj, name) {
+    function constructJsonNode(obj, name, parent) {
       var currentDepth = recurseDepth++;
       var child_index = 0;
+      var id_name;
 
       if(currentDepth > MAX_DEPTH) {
         recurseDepth = currentDepth;
         return null;
       }
-      // prevent circular refs or dup refs (note this could be wrong--don't I want to know that $ is the same as jQuery?)
-      /*if(visited_refs.indexOf(obj) != -1) { 
+      if(JSVIS.no_show_dups && (visited_refs.indexOf(obj) != -1)) { 
         recurseDepth = currentDepth;
         return null;
       }
-      */
       visited_refs.push(obj);
+      visited_names.push(name);
 
       var children = [];
       var childObj;
@@ -86,14 +93,14 @@ var JSVIS = {
 
             // might want to handle arrays (could be lot's o numbers) differently
             if(obj instanceof Array && child_index > MAX_ARRAY_LENGTH) {
-              var etcChild = constructJsonNode(childObj, "...");
+              var etcChild = constructJsonNode(childObj, "...", name);
               if(etcChild !== null) {
                 children.push(etcChild);
               }
               break;
             }
 
-            var newChild = constructJsonNode(childObj, child);
+            var newChild = constructJsonNode(childObj, child, name);
             if(newChild !== null) {
               children.push(newChild); 
             }
@@ -106,17 +113,29 @@ var JSVIS = {
         console.log(e);
       }
 
+      if(visited_refs.contains(obj)) {
+        if(JSVIS.no_show_dups) {
+          unique_id = name + parent;
+        }
+        else {
+          unique_id = name;
+        }
+      }
+      else {
+        unique_id = name;
+      }
+
       recurseDepth = currentDepth;
       var data_type = typeof obj;
       return {
-        'id': name,
+        'id': unique_id,
         'name': name,
         'data': {'level': recurseDepth, type: data_type },
         'children': children
       };
     }
 
-    return constructJsonNode(this.starting_object.obj, this.starting_object.name);
+    return constructJsonNode(this.starting_object.obj, this.starting_object.name, "TOPLEVEL");
   },
 
   refreshVis : function() {
@@ -136,6 +155,7 @@ var JSVIS = {
     $(".control input[name='depth']").val(this.max_depth);
     $(".control input[name='start']").val(this.starting_object.name);
     $(".control input[name='coloring']").attr("checked", this.coloring);
+    $(".control input[name='dups']").attr("checked", !this.no_show_dups);
 
     $("#infovis").css("width", this.width);
     $("#infovis").css("height", this.height);
@@ -152,9 +172,11 @@ var JSVIS = {
       var depth = $(".control input[name='depth']").val();
       var start = $(".control input[name='start']").val();
       var coloring = $(".control input[name='coloring']").attr("checked");
+      var no_show_dups = !$(".control input[name='dups']").attr("checked");
       JSVIS.width = parseInt(width);
       JSVIS.height = parseInt(height);
       JSVIS.coloring = coloring;
+      JSVIS.no_show_dups = no_show_dups;
 
       if(parseInt(depth) !== this.max_depth
           || start !== JSVIS.starting_object.name) {
