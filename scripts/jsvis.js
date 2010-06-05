@@ -7,7 +7,8 @@ Array.prototype.contains = function(obj) {
   return this.indexOf(obj) != -1
 }
 
-function JSVis() {
+function JSVis(events) {
+  var $ = jQuery;
   var m_width = 1400;
   var m_height = 730;
   var m_coloring = true;
@@ -200,29 +201,34 @@ function JSVis() {
     },
 
     init : function() {
-      var i;
       var that = this;
+      var json;
+
       this.initControls();
-      var json = this.gatherData();
+      json = this.gatherData();
       m_jsonList.push(json);
       this.initVis(json);
 
-      for(i = 0; i < 1000; i++){
-        LONG_ARRAY.push(i);
-      } 
-
-      m_jsonList.push(this.gatherData());
-
-      $.each(m_jsonList, function(i, el) {
-        $("#changeList ul").append("<li><a data-index='" + i + "' href='#'>" + i + "</a></li>");
+      $.each(events, function(i, eventObj) {
+        $(eventObj.selector).bind(eventObj.event,function() {
+          var json = that.gatherData();
+          m_jsonList.push(json);
+          $("#changeList ul").append("<li><a data-index='" 
+                                     + (m_jsonList.length - 1)
+                                     + "' href='#'>" 
+                                     + eventObj.selector 
+                                     + "."
+                                     + eventObj.event
+                                     + "</a></li>");
+        });
       });
 
-      $("#changeList a").click(function(e) {
+      $("#changeList ul").append("<li><a data-index='0' href='#'>initial</a></li>");
+
+      $("#changeList a").live("click", function(e) {
         var index = parseInt($(e.target).attr("data-index"));
         var newJson = m_jsonList[index];
         m_graph.op.morph(newJson, {type: 'fade'});
-        //that.refreshVis();
-        //m_graph.op.morph(newJson, {type: 'fade'});
       });
     }
   }

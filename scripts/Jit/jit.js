@@ -6235,7 +6235,7 @@ this.RGraph = new Class({
         if(this.root != id && !this.busy) {
             this.busy = true;
             this.root = id; 
-            that = this;
+            that = this; 
             this.controller.onBeforeCompute(this.graph.getNode(id));
             var obj = this.getNodeAndParentAngle(id);
             
