@@ -115,14 +115,14 @@ function JSVis() {
 
               // might want to handle arrays (could be lot's o numbers) differently
               if(obj instanceof Array && child_index > MAX_ARRAY_LENGTH) {
-                var etcChild = constructJsonNode(childObj, "...", name);
+                var etcChild = constructJsonNode(childObj, "...", unique_id);
                 if(etcChild !== null) {
                   children.push(etcChild);
                 }
                 break;
               }
 
-              var childName = constructJsonNode(childObj, child, name);
+              var childName = constructJsonNode(childObj, child, unique_id);
               if(childName !== null) {
                 children.push(childName); 
               }
