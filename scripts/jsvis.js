@@ -19,6 +19,9 @@ function JSVis() {
   var m_jsonList = [];
 
   return {
+    getJsonList : function() {
+      return m_jsonList;
+    },
     initVis : function(json) {
       m_canvas = new Canvas('mycanvas', {
         'injectInto': 'infovis',
@@ -55,25 +58,42 @@ function JSVis() {
       var recurseDepth = 0;
       var MAX_ARRAY_LENGTH = 30;
       var MAX_DEPTH = m_maxDepth;
-      var visited_refs = [];
-      var visited_names = [];
-      var unique_id = 0;
+
+      var json = [];
+
+      function getIdFromJson(obj) {
+        var i;
+        for(i = 0; i < json.length; i++) {
+          if(json[i].data.obj === obj) {
+            return json[i].id;
+          }
+        }
+        return undefined;
+      }
 
       function constructJsonNode(obj, name, parent) {
         var currentDepth = recurseDepth++;
         var child_index = 0;
-        var id_name;
+        var unique_id = name + parent;
+        
+        // can short circuit if we've already visited this obj
+        var idFromJson = getIdFromJson(obj);
+        if(idFromJson !== undefined) { 
+          if(m_noShowDups) { // don't want to record we saw this
+            recurseDepth = currentDepth;
+            return null;
+          }
+          else {
+            //unique_id = idFromJson; // use the other obj's id
+            recurseDepth = currentDepth;
+            return idFromJson; // use the other obj's id
+          }
+        }
 
         if(currentDepth > MAX_DEPTH) {
           recurseDepth = currentDepth;
           return null;
         }
-        if(m_noShowDups && (visited_refs.indexOf(obj) != -1)) { 
-          recurseDepth = currentDepth;
-          return null;
-        }
-        visited_refs.push(obj);
-        visited_names.push(name);
 
         var children = [];
         var childObj;
@@ -102,9 +122,9 @@ function JSVis() {
                 break;
               }
 
-              var newChild = constructJsonNode(childObj, child, name);
-              if(newChild !== null) {
-                children.push(newChild); 
+              var childName = constructJsonNode(childObj, child, name);
+              if(childName !== null) {
+                children.push(childName); 
               }
               child_index++;
             }
@@ -115,29 +135,19 @@ function JSVis() {
           console.log(e);
         }
 
-        if(visited_refs.contains(obj)) {
-          if(m_noShowDups) {
-            unique_id = name + parent;
-          }
-          else {
-            unique_id = name;
-          }
-        }
-        else {
-          unique_id = name;
-        }
-
         recurseDepth = currentDepth;
         var data_type = typeof obj;
-        return {
+        json.push({
           'id': unique_id,
           'name': name,
-          'data': {'level': recurseDepth, type: data_type },
-          'children': children
-        };
+          'data': {'level': recurseDepth, 'type': data_type, 'obj': obj},
+          'adjacencies': children
+        });
+        return unique_id;
       }
-
-      return constructJsonNode(m_startingObject.obj, m_startingObject.name, "TOPLEVEL");
+      constructJsonNode(m_startingObject.obj, m_startingObject.name, "TOPLEVEL");
+      json.reverse();
+      return json; 
     },
 
     refreshVis : function() {
@@ -146,7 +156,7 @@ function JSVis() {
 
       m_canvas.resize(m_width, m_height);
       m_graph.fx.clearLabels(true);
-      m_graph.loadJSON(m_json);
+      m_graph.loadJSON(m_jsonList[m_jsonList.length-1]);
       m_graph.refresh();
     },
     
@@ -181,16 +191,10 @@ function JSVis() {
         m_coloring = coloring;
         m_noShowDups = no_show_dups;
 
-        if(parseInt(depth) !== m_maxDepth
-            || start !== m_startingObject.name) {
-          m_startingObject.name = start;
-          m_startingObject.obj = window[start];
-          m_maxDepth = parseInt(depth);
-          m_json = that.gatherData();
-        }
-        else {
-          m_maxDpeth = parseInt(depth);
-        }
+        m_startingObject.name = start;
+        m_startingObject.obj = window[start];
+        m_maxDepth = parseInt(depth);
+        m_jsonList.push(that.gatherData());
         that.refreshVis();
       });
     },
@@ -199,9 +203,9 @@ function JSVis() {
       var i;
       var that = this;
       this.initControls();
-      m_json = this.gatherData();
-      m_jsonList.push(m_json);
-      this.initVis(m_json);
+      var json = this.gatherData();
+      m_jsonList.push(json);
+      this.initVis(json);
 
       for(i = 0; i < 1000; i++){
         LONG_ARRAY.push(i);
@@ -216,11 +220,7 @@ function JSVis() {
       $("#changeList a").click(function(e) {
         var index = parseInt($(e.target).attr("data-index"));
         var newJson = m_jsonList[index];
-        console.log(newJson);
-        if(newJson.name === m_json.name) {
-          newJson.id = m_json.id;
-          m_graph.op.morph(newJson, {type: 'fade'});
-        }
+        m_graph.op.morph(newJson, {type: 'fade'});
         //that.refreshVis();
         //m_graph.op.morph(newJson, {type: 'fade'});
       });
