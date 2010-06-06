@@ -1,7 +1,7 @@
-var VIS = new JSVis([{ "selector": "#infovis", "event": "click"}]);
+var VIS = new JSVis([{ "selector": "#btnCollect", "event": "click"}]);
 
 jQuery(document).ready(function() {
-  jQuery("#infovis").click(function() {
+  jQuery("#btnCollect").click(function() {
     var i;
     for(i = 0; i < 1000; i++){
       LONG_ARRAY.push(i);

@@ -2,8 +2,7 @@
 #infovis {  
     width:800px;  
     height:600px;  
-    /*background-color:#1A1A1A;  */
-    background-color:black;
+    background-color:#1A1A1A;
 }  
 /* style for node labels */  
 .node {  

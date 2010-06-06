@@ -38,8 +38,9 @@ function JSVis(events) {
           dim: 2
         },
         Edge: {
-          //color: '#772277'
-          color: 'darkred'
+        //  color: '#772277'
+          color: 'darkred',
+          lineWidth: 3
         },
         onPlaceLabel: function(el, node) {
           el.innerHTML = node.name;
