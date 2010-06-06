@@ -2,7 +2,8 @@
 #infovis {  
     width:800px;  
     height:600px;  
-    background-color:#222;  
+    /*background-color:#1A1A1A;  */
+    background-color:black;
 }  
 /* style for node labels */  
 .node {  
@@ -10,7 +11,7 @@
     background-color:transparent;  
     cursor:pointer;  
     font-weight:bold;  
-    opacity:0.5;  
+    /*opacity:0.5;  */
     font-size: xx-small;
 }  
   
@@ -43,4 +44,13 @@ div.node_string {
 }
 div.node_string:hover {
   background-color:goldenrod;
+}
+
+div.node_primary {
+  font-size: small;
+}
+
+div.node_secondary {
+  font-size: x-small;
+  opacity: 0.5;
 }

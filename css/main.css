@@ -26,24 +26,45 @@ h2 {
   position:absolute;
   top: 40px;
   left: 40px;
-  width: 200px;
-  height: 215px;
+  width: 210px;
+  height: 250px;
   background-color: slategray;
   border: 2px solid white;
+}
+
+#controls input {
+  width: 80px;
 }
 
 #changeList {
   position:absolute;
-  top: 265px;
+  top: 300px;
   left: 40px;
   width: 200px;
   height: 200px;
+  padding: 5px;
   background-color: slategray;
   border: 2px solid white;
+  text-align: left;
+  font-size: medium;
+}
+
+#changeList a {
+  color: black;
+}
+
+#changeList a:hover {
+  background: #000000 none repeat scroll 0 0;
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+#changeList a.selected {
+  color: navy;
 }
 
 .control {
-  font-size: x-small;
+  font-size: medium;
   text-align: right;
 }
 

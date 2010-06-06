@@ -32,16 +32,27 @@ function JSVis(events) {
         
       m_graph = new RGraph(m_canvas, {
         interpolation: 'linear',
-        levelDistance: 100,
+        levelDistance: 150,
         Node: {
           color: '#ccddee',
-          dim: 1
+          dim: 2
         },
         Edge: {
-          color: '#772277'
+          //color: '#772277'
+          color: 'darkred'
         },
-        onCreateLabel: function(el, node) {
+        onPlaceLabel: function(el, node) {
           el.innerHTML = node.name;
+
+          if(node._depth <= 1) {
+            $(el).addClass("node_primary");            
+            $(el).removeClass("node_secondary");            
+          }
+          else {
+            $(el).addClass("node_secondary");
+            $(el).removeClass("node_primary");
+          }
+
           if(m_coloring) {
             $(el).addClass("node_" + node.data.type);
           }
@@ -226,6 +237,7 @@ function JSVis(events) {
       $("#changeList ul").append("<li><a data-index='0' href='#'>initial</a></li>");
 
       $("#changeList a").live("click", function(e) {
+        $(this).addClass("selected");
         var index = parseInt($(e.target).attr("data-index"));
         var newJson = m_jsonList[index];
         m_graph.op.morph(newJson, {type: 'fade'});
