@@ -27,9 +27,40 @@ Checking out file systems for good and for profit.
 \section{Background}
 
 \section{Method}
+Basically two things are happening. First there is some JavaScript that runs to collect all the data that matters. It runs by grabbing the {\tt window} global object and doing a depth-first search through each of the objects. As it walks each node (object) in the graph is constructs a separate object that will be used in the visualization tool. Essentially we are simplifying the object data that exists in the global object so that it can be more easily translated into the visualization.
+
+There is some interesting filtering of the data going on. By default each browser provides a number of functions at the global level which are often not very interesting to the developer. By default these are ignored. The collector also does not walk down DOM elements. These are the elements that represent the elements displayed in the browser window. Since the focus is on the application and not the display these are currently being ignored. It also ignores objects that have been seen before to prevent creating circular references. This could be seen as a problem since it is sometimes very useful to know that an object is referenced by multiple names. For example the jQuery library has two alias that can be used ({\tt \$} and {\tt jQuery}) and there is good reason to visualize this relation. Only the first name discovered by the collector is currently being displayed but this could and probably should be changed in the future.
+
+Array are another interesting special case in the collector. Since arrays are often used to hold large amounts of data (e.g. 1000s of elements) the collector will do some truncation of arrays if the exceeded a set maximum number of elements (currently set at 30).
+
+Once the simplified object has been created it is passed to a visualization tool called the JavaScript InfoVis Toolkit (JIT). JIT then transforms the json object into a visualization in the browser. It uses canvas to draw the vis inside the browser window. There are some controls on the browser window to give some options to the user. Coloring of the graph can be turned on or off, the size of the canvas can be changed, maximum depth to draw, and which object to start with.
+
 
 \section{Results}
-Some pretty pictures go here.
+During development I actually managed to discover a programming flaw in the underlying JIT visualization library I was using. It appears that the programmers of JIT forgot to use the {\tt var} keyword when assigning to a variable called {\tt that}. I noticed this while testing out the change morphing, the {\tt that} variable showed up making me think that there was an error in my code but it was obvious from the visualization that the values being stored in {\tt that} had to do with the internals of JIT.
+
+Use of a variable called {\tt that} is actually a standard pattern in JavaScript development. It is usually used to store a particular value of the {\tt this} object in a closure. Because the {\tt var} keyword was not used the assignment to {\tt that} was placed into the global object. This is a potential source of bugs since multiple closures could possible be in conflict about the contents of {\tt that}.
+
+
+One of the goals of this visualization was to see the difference between a ``messy'' project and a ``clean'' project. Though the definitions are a bit fuzzy the intuition behind the terms is that a ``messy'' project has lots of objects in the global namespace while a ``clean'' project has relatively few. The reason for the value judgement in the terms is that when many things are in the same namespace the chance for unintentional conflict is greater and since JavaScript's type system is so dynamic the point of failure is later sometimes resulting in subtle runtime bugs. Also with a ``clean'' project structure understandibility and learning is facilatated. It is easier to find things when they have been grouped into hierarchies.
+
+To see if the visualization would work well for visualzing the difference between a ``messy'' and ``clean'' project I ran JSVis on two different projects. One was a project I had worked on several years ago when I was first learning how to program in JavaScript. The other was the use of the calenadar widget for YUI. Admittedly the comparison is in someways unfair since the functionality of the two projects is very different however since the underlying structure is so different it does works as an illustrative example. As can be seen in fig (\ref{fig:clean}) there are around half a dozen items in the top level with many more items under each of them. In contrast fig (BBB) has tons of items in the top level making it very difficult to make out one from the other.
+
+\begin{figure}[clean]
+  \begin{center}
+    \includegraphics[scale=.5]{clean.png}
+  \end{center}
+  \caption{Clean Project}
+  \label{fig:clean}
+\end{figure}
+
+\begin{figure}[messy]
+  \begin{center}
+    \includegraphics[scale=.5]{messy.png}
+  \end{center}
+  \caption{Messy Project}
+  \label{fig:messy}
+\end{figure}
 
 \section{Related Work}
 \label{sec:related}
