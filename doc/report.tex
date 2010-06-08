@@ -36,7 +36,7 @@ JavaScript \cite{ECMA-262} is a dynamic language primarily used in client-side w
 
 JavaScript provides support for object oriented techniques but uses a prototype-based object system as opposed to the more traditional class-based system found in languages such as Java or C++. Objects in JavaScript are collections of mutable key/value properties roughly analogous to maps in Java or dictionaries in Python. The potential objects an application uses are not defined before instantiation, instead objects are instantiated and then mutated into their necessary form as the application executes.
 
-When object are created at the top level of a script (i.e. not inside functions as local variables) they are added as properties to a global object called {\tt window} in the browser setting. For example after the code in snippet \ref{snip:code} is executed the {\tt window} object will contain three properties: {\tt myObj} which is an object with {\tt foo} and {\tt baz}, {\tt myFun} which is a function, and {\tt globalVariable} which is the number 22.
+When an object is created at the top level of a script (i.e. not inside a function as a local variable) it is added as a property to a global object (named {\tt window} in the browser environment). For example after the code in snippet \ref{snip:code} is executed the {\tt window} object will contain three properties: {\tt myObj} which is an object with properties {\tt foo} and {\tt baz}, {\tt myFun} which is a function, and {\tt globalVariable} which is the number 22. Each property can be referenced with the familiar dot notation (e.g. {\tt window.myObj.foo} gives ``bar'').
 
 \begin{program}[here]
 \begin{verbatim}
@@ -54,17 +54,35 @@ function myFun(){
 \label{snip:code}
 \end{program}
 
+The reason {\tt globalVariable} is added to the global object is because it was not declared with the {\tt var} keyword. Any variable used in a function that has not been declared with {\tt var} is added to the global object. This is a source of potential bugs when developers forget to use {\tt var}.
+
+Since JavaScript does not have a module system to partition the namespace, it is standard practice for developers to use objects as a replacement. The Yahoo User Interface library (YUI) \cite{yui} is a good example of this. Every object used in YUI is contained in the top level {\tt YAHOO} object which is added to the global object. So for example if developers wish to use the calendar widget, they reference {\tt YAHOO.widget.Calendar}.
+
+This use of objects as replacement modules provides a good place to begin visualization. Since most of the interesting objects in the system are available by traversing the global object, we can get an understanding of the project's structure by visualizing how these objects are related.
 
 \section{Method}
 \label{sec:method}
-Basically two things are happening. First there is some JavaScript that runs to collect all the data that matters. It runs by grabbing the {\tt window} global object and doing a depth-first search through each of the objects. As it walks each node (object) in the graph is constructs a separate object that will be used in the visualization tool. Essentially we are simplifying the object data that exists in the global object so that it can be more easily translated into the visualization.
+The visualization tool was written in JavaScript and runs in a web browser. The code is meant to be added to any JavaScript application that a user wishes to visualize. A user simply adds a script to their page and the visualization is displayed.
 
-There is some interesting filtering of the data going on. By default each browser provides a number of functions at the global level which are often not very interesting to the developer. By default these are ignored. The collector also does not walk down DOM elements. These are the elements that represent the elements displayed in the browser window. Since the focus is on the application and not the display these are currently being ignored. It also ignores objects that have been seen before to prevent creating circular references. This could be seen as a problem since it is sometimes very useful to know that an object is referenced by multiple names. For example the jQuery library has two alias that can be used ({\tt \$} and {\tt jQuery}) and there is good reason to visualize this relation. Only the first name discovered by the collector is currently being displayed but this could and probably should be changed in the future.
+To accomplish the visualization two main processes occur. First a process runs to collect the salient data. It accomplices this by starting with the global object {\tt window} and doing a depth-first search through each of its contained objects. As it walks each node (object) in the graph it constructs a separate object with the data necessary to display the visualization. Essentially it is simplifying the object data so that it can be more easily translated into the visualization.
 
-Array are another interesting special case in the collector. Since arrays are often used to hold large amounts of data (e.g. 1000s of elements) the collector will do some truncation of arrays if they exceeded a set maximum number of elements (currently set at 30).
+As this process is walking the object graph, it also does some filtering of the data. By default each browser provides a number of functions at the top level which are usually not very interesting to the developer since they are the same in every project. By default these are ignored. The collector process also does traverse any DOM elements. These are the objects that represent the display elements in the browser window. Since the focus of the visualization is on the application and not the display, these are currently being ignored. It also ignores objects that have been previously visited to prevent creating circular references. This is a potential issue since it is sometimes useful to know that an object is referenced by multiple names. For example the jQuery library \cite{jquery} has two alias that can be used ({\tt \$} and {\tt jQuery}) and it is useful to know that both exist. Only the first name discovered by the collector is currently being displayed. Array are another special case in the collector. Since arrays are often used to hold large amounts of data (e.g. 1000s of elements) which is difficult to visualize, the collector will truncate arrays if they exceeded a set maximum number of elements (currently set at 30).
 
-Once the simplified object has been created it is passed to a visualization tool called the JavaScript InfoVis Toolkit (JIT) \cite{jit}. JIT then transforms the json object into a visualization in the browser. It uses canvas to draw the vis inside the browser window. There are some controls on the browser window to give some options to the user. Coloring of the graph can be turned on or off, the size of the canvas can be changed, maximum depth to draw, and which object to start with.
 
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=.2]{interface.png}
+  \end{center}
+  \caption{Global object three levels deep with interface}
+  \label{fig:interface}
+\end{figure}
+
+
+Once the simplified object has been created it is passed to a visualization library for display. The library being used is called the JavaScript InfoVis Toolkit (JIT) \cite{jit}. The specific visualization provided by JIT that is used is a radial tree inspired by the work done by Yee et al. \cite{yee2001animated}. The simplified object is transformed into a radial tree with each object represented as a node and lines between nodes representing contains relationships (see figure \ref{fig:interface}). Each node is colored to represent its type (blue for functions, green for numbers, orange for strings, and white for standard objects). 
+
+Interactivity is provided by allowing a user to recenter the graph by clicking on a node. The user is also given controls to select the starting object (by default {\tt window}), maximum depth to traverse, size of the graph, and a toggle for node coloring. 
+
+Since the data is collected at run-time, the visualization is able to collect the data multiple times and then display the changes between the graphs. There is a button in the interface to force collection to occur whenever a user clicks on it but the collection process can also be wired to any arbitrary events that can be triggered in the browser. Once the data has been collected the user can select a snapshot and the graph will morph into the new state recorded by that snapshot.
 
 \section{Results}
 \label{sec:results}
@@ -100,14 +118,6 @@ To see if the visualization would work well for visualzing the difference betwee
   \end{center}
   \caption{Global object four levels deep}
   \label{fig:deep-window}
-\end{figure}
-
-\begin{figure}[h]
-  \begin{center}
-    \includegraphics[scale=.2]{interface.png}
-  \end{center}
-  \caption{Global object three levels deep with interface}
-  \label{fig:interface}
 \end{figure}
 
 \begin{figure}[h]
