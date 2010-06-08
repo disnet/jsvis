@@ -32,6 +32,27 @@ This paper is structured as follows: section \ref{sec:background} gives an overv
 
 \section{Background}
 \label{sec:background}
+JavaScript \cite{ECMA-262} is a dynamic language primarily used in client-side web applications. Once regarded as a toy scripting language its popularity has increased in recent years due to its use in complex web applications such as Gmail and Google Maps.
+
+JavaScript provides support for object oriented techniques but uses a prototype-based object system as opposed to the more traditional class-based system found in languages such as Java or C++. Objects in JavaScript are collections of mutable key/value properties roughly analogous to maps in Java or dictionaries in Python. The potential objects an application uses are not defined before instantiation, instead objects are instantiated and then mutated into their necessary form as the application executes.
+
+When object are created at the top level of a script (i.e. not inside functions as local variables) they are added as properties to a global object called {\tt window} in the browser setting. For example after the code in snippet \ref{snip:code} is executed the {\tt window} object will contain three properties: {\tt myObj} which is an object with {\tt foo} and {\tt baz}, {\tt myFun} which is a function, and {\tt globalVariable} which is the number 22.
+
+\begin{program}[here]
+\begin{verbatim}
+var myObj = {
+  foo: "bar",
+  baz: 42.34
+};
+
+function myFun(){
+  var localVariable = 5;
+  globalVariable = 22;
+}
+\end{verbatim}
+\caption{Example JavaScript code}
+\label{snip:code}
+\end{program}
 
 
 \section{Method}
@@ -112,6 +133,7 @@ That which has gone before.
 \section{Future Work}
 \label{sec:future}
 What could be done.
+%TODO: talk about collecting more object data from JS engines
 
 \section{Conclusion}
 \label{sec:conclusion}
