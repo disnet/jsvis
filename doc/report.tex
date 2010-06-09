@@ -19,7 +19,7 @@
 \lstset{showstringspaces=false}
 
 \begin{abstract}
-  Visualization techniques have been used to help programmers deepen their understanding of large software projects. However the existing visualization techniques have focused on static languages where type information can be determined at compile-time. This paper describes a new visualization tool aimed at the dynamic language JavaScript.
+  Visualization techniques have been used to help programmers deepen their understanding of large software projects. However the existing visualization techniques have focused on static languages where type information can only be determined at compile-time. This paper describes a new visualization tool aimed at the dynamic language JavaScript.
 \end{abstract}
 
 \section{Introduction}
@@ -75,9 +75,9 @@ The visualization tool was written in JavaScript and runs in a web browser. The 
   \label{fig:interface}
 \end{figure}
 
-To accomplish the visualization two main processes occur. First a process runs to collect the salient data. It accomplices this by starting with the global object {\tt window} and doing a depth-first search through each of its contained objects. As it walks each node (object) in the graph it constructs a separate object with the data necessary to display the visualization. Essentially it is simplifying the object data so that it can be more easily translated into the visualization.
+To accomplish the visualization two main processes occur. First a process runs to collect the salient data. It accomplices this by starting with the global object {\tt window} and doing a depth-first search through each of its contained objects. As it walks each node (object) in the graph, it constructs a separate object with the data necessary to display the visualization. Essentially it is simplifying the object data so that it can be more easily translated into the visualization.
 
-As this process is walking the object graph, it also does some filtering of the data. By default each browser provides a number of functions at the top level which are usually not very interesting to the developer since they are the same in every project. By default these are ignored. The collector process also does traverse any DOM elements. These are the objects that represent the display elements in the browser window. Since the focus of the visualization is on the application and not the display, these are currently being ignored. It also ignores objects that have been previously visited to prevent creating circular references. This is a potential issue since it is sometimes useful to know that an object is referenced by multiple names. For example the jQuery library \cite{jquery} has two alias that can be used ({\tt \$} and {\tt jQuery}) and it is useful to know that both exist. Only the first name discovered by the collector is currently being displayed. Array are another special case in the collector. Since arrays are often used to hold large amounts of data (e.g. 1000s of elements) which is difficult to visualize, the collector will truncate arrays if they exceeded a set maximum number of elements (currently set at 30).
+As this process is walking the object graph, it also does some filtering of the data. By default each browser provides a number of functions at the top level which are usually not very interesting to the developer since they are the same in every project. By default these are ignored. The collector process also does not traverse any DOM elements. These are the objects that represent the display elements in the browser window. Since the focus of the visualization is on the application and not the display, these are currently being ignored. It also ignores objects that have been previously visited to prevent creating circular references. This is a potential issue since it is sometimes useful to know that an object is referenced by multiple names. For example the jQuery library \cite{jquery} has two alias that can be used ({\tt \$} and {\tt jQuery}) and it is useful to know that both exist. Only the first name discovered by the collector is currently being displayed. Array are another special case in the collector. Since arrays are often used to hold large amounts of data (e.g. 1000s of elements) which is difficult to visualize, the collector will truncate arrays if they exceeded a set maximum number of elements (currently set at 30).
 
 
 
@@ -107,7 +107,7 @@ Since the data is collected at run-time, the visualization is able to collect th
   \label{fig:clean}
 \end{figure}
 
-While testing the visualization tool after it had been developed, I realized it would have been very useful during the development process. In particular I ran into difficulties trying to find a specific method on the JIT's RGraph object that would accomplish morphing the graph from one state to another. Though I eventually found the documentation for the necessary method, it was not obvious where it was located. If instead of pouring through the documentation, I had looked at the graph of RGraph (seen in figure \ref{fig:rgraph}) the method, {\tt RGraph.op.prototype.morph}, would have been discovered much more rapidly.
+While testing the visualization tool after it had been developed, I realized it would have been very useful during the development process. In particular I ran into difficulties trying to find a specific method on the JIT's RGraph object that would accomplish morphing the graph from one state to another. Though I eventually found the documentation for the necessary method, it was not obvious where it was located. If, instead of pouring through the documentation, I had looked at the graph of RGraph (seen in figure \ref{fig:rgraph}) the method, {\tt RGraph.op.prototype.morph}, would have been discovered much more rapidly.
 
 During development I also managed to discover a programming flaw in the JIT visualization library. It appears that the programmers of JIT forgot to use the {\tt var} keyword when assigning to a variable called {\tt that}. I noticed this while testing out the change morphing, the {\tt that} variable showed up unexpectedly while moving from one change snapshot to another. Initially I thought that there was an error in my code but it quickly became obvious from the visualization that the values being stored in {\tt that} had to do with the internals of JIT.
 
@@ -119,13 +119,13 @@ During development I also managed to discover a programming flaw in the JIT visu
   \label{fig:messy}
 \end{figure}
 
-Use of a variable called {\tt that} is actually a standard pattern in JavaScript development. It is usually used to store a particular value of the {\tt this} object in a closure. Because the {\tt var} keyword was not used the assignment to {\tt that} was placed into the global object. This is a potential source of bugs since multiple closures could possible be in conflict about the contents of {\tt that}.
+Use of a variable called {\tt that} is actually a standard pattern in JavaScript development. It is commonly used to store a particular value of the {\tt this} object in a closure. Because the {\tt var} keyword was not used, the assignment to {\tt that} was placed on the global object. This is a potential source of bugs since multiple closures could possibly be in conflict over the contents of {\tt that}.
 
 
-One of the goals of this visualization was to see the difference between a ``messy'' project and a ``clean'' project. Though the definitions are a bit fuzzy the intuition behind the terms is that a ``messy'' project has lots of objects in the global namespace while a ``clean'' project has relatively few. The reason for the value judgement in the terms is that when many things are in the same namespace the chance for an unintentional conflict is greater resulting in subtle runtime bugs. Also with a ``clean'' project structure understandability and learning is facilitated. It is easier to find things when they have been grouped into hierarchies.
+One of the goals of this visualization was to see the difference between a ``messy'' project and a ``clean'' project. Though the definitions are a bit fuzzy the intuition behind the terms is that a ``messy'' project has lots of objects in the global namespace while a ``clean'' project has relatively few. The reason for the value judgement in the terms is that when many objects are in the same namespace the chance for an unintentional conflict is greater resulting in subtle runtime bugs. Also with a ``clean'' project structure understandability and learning is facilitated. It is easier to find things when they have been grouped into hierarchies.
 
 
-To see if the visualization would work well for visualizing the difference between a ``messy'' and ``clean'' project I ran the tool on two different projects. One was a project I had worked on several years ago when I was first learning how to program in JavaScript. The other was the use of the calendar widget from YUI. Although the comparison is partially unfair since the functionality of the two projects is very different, it does provide an illustrative example. As can be seen in figure \ref{fig:clean} there are around half a dozen items in the top level with many more items under each of them. In contrast figure \ref{fig:messy} has many items in the top level making it very difficult to make out one from the other.
+To see if the visualization would work well for visualizing the difference between a ``messy'' and ``clean'' project I ran the tool on two different projects. One was a project I had worked on several years ago when I was first learning how to program in JavaScript. The other was the use of a calendar widget from YUI. Although the comparison is partially unfair since the functionality of the two projects is very different, it does provide an illustrative example. As can be seen in the calendaring widget example in figure \ref{fig:clean} there are around half a dozen items in the top level with many more items under each of them. In contrast the old code base in figure \ref{fig:messy} has many items in the top level making it very difficult to make out one from the other.
 
 
 
@@ -156,7 +156,7 @@ There has also been work done on visualizing large hierarchies of data such as d
 \label{sec:future}
 Currently the tool only collects object data available in the global object. This allows us to see many of the interesting object in the system however it does miss any objects scoped as function local variables. It would be interesting to see if adding this data would provide additional insights into the program structure.
 
-Other potential work could include user studies to determine how well this system works for other developers.
+Other potential work could include displaying all references to an object if more than one exists and user studies to determine how well this system works for other developers.
 
 \section{Conclusion}
 \label{sec:conclusion}
