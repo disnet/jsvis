@@ -9,8 +9,8 @@ Array.prototype.contains = function(obj) {
 
 function JSVis(events) {
   var $ = jQuery;
-  var m_width = 1400;
-  var m_height = 730;
+  var m_width = 1200;
+  var m_height = 700;
   var m_coloring = true;
   var m_noShowDups = true;
   var m_startingObject = {obj:window, name: "window"};
@@ -238,6 +238,7 @@ function JSVis(events) {
       $("#changeList ul").append("<li><a data-index='0' href='#'>initial</a></li>");
 
       $("#changeList a").live("click", function(e) {
+        $("#changeList a").removeClass("selected");
         $(this).addClass("selected");
         var index = parseInt($(e.target).attr("data-index"));
         var newJson = m_jsonList[index];
