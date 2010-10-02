@@ -1,11 +1,15 @@
 /* style for the visualization container */  
 #infovis {  
+    position: absolute;
+    top: 50px;
+    left: 100px;
     width:800px;  
     height:700px;  
     background-color:#1A1A1A;
     border: 3px solid purple;
 }  
 #controls {
+    text-align: center;
     height: 20px;
     padding-top: 2px;
     background-color: gray;

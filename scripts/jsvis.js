@@ -18,6 +18,7 @@ function JSVis(events) {
   var m_graph = null;
   var m_maxDepth = 2;
   var m_jsonList = [];
+  var ignored = [ "ignored", "_firebug", "_FirebugCommandLine", "location", "addEventListener", "_getFirebugConsoleElement", "loadFirebugConsole", "console", "window", "_FirebugConsole", "document", "navigator", "netscape", "XPCSafeJSObjectWrapper", "XPCNativeWrapper", "Components", "sessionStorage", "globalStorage", "getComputedStyle", "dispatchEvent", "removeEventListener", "name", "parent", "top", "dump", "getSelection", "scrollByLines", "scrollbars", "scrollX", "scrollY", "scrollTo", "scrollBy", "scrollByPages", "sizeToContent", "setTimeout", "setInterval", "clearTimeout", "clearInterval", "setResizable", "captureEvents", "releaseEvents", "routeEvent", "enableExternalCapture", "disableExternalCapture", "open", "openDialog", "frames", "applicationCache", "self", "screen", "history", "content", "menubar", "toolbar", "locationbar", "personalbar", "statusbar", "directories", "closed", "crypto", "pkcs11", "controllers", "opener", "status", "defaultStatus", "innerWidth", "innerHeight", "outerWidth", "outerHeight", "screenX", "screenY", "mozInnerScreenX", "mozInnerScreenY", "pageXOffset", "pageYOffset", "scrollMaxX", "scrollMaxY", "length", "fullScreen", "alert", "confirm", "prompt", "focus", "blur", "back", "forward", "home", "stop", "print", "moveTo", "moveBy", "resizeTo", "resizeBy", "scroll", "close", "updateCommands", "find", "atob", "btoa", "frameElement", "showModalDialog", "postMessage", "localStorage"];
 
   return {
     getJsonList : function() {
@@ -31,7 +32,7 @@ function JSVis(events) {
       $("#infovis").draggable();
       $("#infovis").css("width", m_width);
       $("#infovis").css("height", m_height);
-      jQuery("#infovis").prepend("<div id='controls'><form><span>Width: <input type=\"text\" name=\"width\"></span><span>Height: <input type=\"text\" name=\"height\"></span><span>Depth: <input type=\"text\" name=\"depth\"></span><span>Object: <input type=\"text\" name=\"start\"></span><span><input type=\"button\" name=\"refresh\" value=\"refresh\"></span></form></div>");
+      jQuery("#infovis").prepend("<div id='controls'><form><span>Width: <input type=\"text\" name=\"width\"></span><span>Height: <input type=\"text\" name=\"height\"></span><span>Depth: <input type=\"text\" name=\"depth\"></span><span>Object: <input type=\"text\" name=\"start\"></span><span><input type=\"button\" name=\"refresh\" value=\"refresh\"></span><span><input type=\"button\" name=\"close\" value=\"close\"></span></form></div>");
       $controls = $("#controls");
 
       $("#controls input[type=text]").css("width", 30);
@@ -47,6 +48,10 @@ function JSVis(events) {
           $("#controls input[name=refresh]").trigger("click");
         }
       });
+
+      $("#controls input[name=close]").click(function() {
+                                              $("#infovis").css("display", "none");
+                                             });
 
       $("#controls input[name=refresh]").click(function(e) {
         var width = $("#controls input[name='width']").val();
