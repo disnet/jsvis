@@ -1,0 +1,75 @@
+\begin{thebibliography}{10}
+
+\bibitem{jit}
+Nicolas~Garcia Belmonte.
+\newblock The javascript infovis toolkit.
+\newblock available from \texttt{http://thejit.org/}, 2010.
+
+\bibitem{brooks1987no}
+F.P. Brooks.
+\newblock {No silver bullet}.
+\newblock {\em IEEE Computer}, 20(4):10--19, 1987.
+
+\bibitem{ECMA-262}
+E.~C. M.~A. International.
+\newblock {\em ECMA-262: ECMAScript Language Specification}.
+\newblock ECMA (European Association for Standardizing Information and
+  Communication Systems), Geneva, Switzerland, third edition, December 1999.
+
+\bibitem{idea}
+JetBrains.
+\newblock Intellij idea dependency analysis.
+\newblock available from \texttt{http://www.jetbrains.com/idea/features/{
+  }dependency\_analysis.html}, 2010.
+
+\bibitem{kleiberg2001botanical}
+E.~Kleiberg, H.~Van De~Wetering, and J.J. Van~Wijk.
+\newblock {Botanical visualization of huge hierarchies}.
+\newblock In {\em Proceedings IEEE Symposium on Information Visualization
+  (InfoVis’ 2001)}, pages 87--94. Citeseer, 2001.
+
+\bibitem{jquery}
+John Resig.
+\newblock jquery library.
+\newblock available from \texttt{http://jquery.com/}, 2010.
+
+\bibitem{solidsx}
+SolidSource.
+\newblock Solidsx.
+\newblock available from \texttt{http://www.solidsourceit.com/products/{
+  }SolidSX-source-code-dependency-analysis.html}, 2010.
+
+\bibitem{stan4j}
+STAN.
+\newblock stan4j - structural analysis for java.
+\newblock available from \texttt{http://stan4j.com/}, 2010.
+
+\bibitem{haskellvis}
+Don Stewart.
+\newblock Visualising the haskell universe.
+\newblock available from \texttt{http://donsbot.wordpress.com/2009/03/16/{
+  }visualising-the-haskell-universe/}, 2009.
+
+\bibitem{teoh2002rings}
+S.T. Teoh and K.L. Ma.
+\newblock {RINGS: A technique for visualizing large hierarchies}.
+\newblock {\em Lecture Notes in Computer Science}, 2528:268--275, 2002.
+
+\bibitem{Wang2006}
+Yue Wang, Soon~Tee Teoh, and Kwan-liu Ma.
+\newblock {Evaluating the Effectiveness of Tree Visualization Systems for
+  Knowledge Discovery}.
+\newblock {\em Knowledge Creation Diffusion Utilization}, 2006.
+
+\bibitem{yui}
+Yahoo.
+\newblock Yui library.
+\newblock available from \texttt{http://developer.yahoo.com/yui/}, 2010.
+
+\bibitem{yee2001animated}
+K.P. Yee, D.~Fisher, R.~Dhamija, and M.~Hearst.
+\newblock {Animated exploration of dynamic graphs with radial layout}.
+\newblock In {\em Proceedings of the IEEE Symposium on Information
+  Visualization}, volume~43. Citeseer, 2001.
+
+\end{thebibliography}

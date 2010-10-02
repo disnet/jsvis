@@ -1,0 +1,55 @@
+/* style for the visualization container */  
+#infovis {  
+    width:800px;  
+    height:600px;  
+    background-color:#1A1A1A;
+}  
+/* style for node labels */  
+.node {  
+    color: white;  
+    background-color:transparent;  
+    cursor:pointer;  
+    font-weight:bold;  
+    /*opacity:0.5;  */
+    font-size: xx-small;
+}  
+  
+.node:hover {  
+    cursor:pointer;  
+    color: #222;  
+    background-color:white;  
+    font-weight:bold;  
+    font-size: large;
+    opacity:1.0;  
+    z-index: 99; /* make sure hover label is on top */
+}  
+
+div.node_function {
+  color: cyan;
+}
+div.node_function:hover {
+  background-color:cyan;
+}
+
+div.node_number {
+  color: lime;
+}
+div.node_number:hover {
+  background-color:lime;
+}
+
+div.node_string {
+  color: goldenrod;
+}
+div.node_string:hover {
+  background-color:goldenrod;
+}
+
+div.node_primary {
+  font-size: small;
+}
+
+div.node_secondary {
+  font-size: x-small;
+  opacity: 0.5;
+}

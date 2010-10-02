@@ -1,0 +1,5 @@
+jsvis.html is the project webpage.
+
+demo.html is an example usage of the visualization tool with the YUI library as an exmple.
+
+src.zip contains just the base code necessary to display the visualization without extra example libraries.

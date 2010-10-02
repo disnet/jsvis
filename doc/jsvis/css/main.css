@@ -1,0 +1,75 @@
+/* A simple shell that puts a fix with helvetical font
+ * with the content fixed width in the center
+ */
+
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: large;
+    text-align: center;
+}
+
+h1 {
+    font-family: georgia,'bitstream vera sans serif','lucida grande',helvetica,verdana,sans-serif
+}
+
+h2 {
+    font-size: x-large;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.main {
+    /*margin: 0 auto;*/
+    width: 600px;
+}
+
+#controls {
+  position:absolute;
+  top: 40px;
+  left: 40px;
+  width: 210px;
+  height: 250px;
+  background-color: slategray;
+  border: 2px solid white;
+}
+
+#controls input {
+  width: 80px;
+}
+
+#changeList {
+  position:absolute;
+  top: 300px;
+  left: 40px;
+  width: 200px;
+  height: 200px;
+  padding: 5px;
+  background-color: slategray;
+  border: 2px solid white;
+  text-align: left;
+  font-size: medium;
+}
+
+#changeList a {
+  color: black;
+}
+
+#changeList a:hover {
+  background: #000000 none repeat scroll 0 0;
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+#changeList a.selected {
+  color: navy;
+}
+
+.control {
+  font-size: medium;
+  text-align: right;
+}
+
+.control div {
+  margin-top: 5px;
+  margin-right: 5px;
+}
+
