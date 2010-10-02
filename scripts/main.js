@@ -1,15 +1,19 @@
-var VIS = new JSVis([{ "selector": "#btnCollect", "event": "click"}]);
+
+
+
 
 jQuery(document).ready(function() {
-  jQuery("#btnCollect").click(function() {
-    var i;
-    for(i = 0; i < 1000; i++){
-      LONG_ARRAY.push(i);
-    } 
-  });
+                         var VIS = new JSVis([{ "selector": "#btnCollect", "event": "click"}]);
 
-  VIS.init();
-});
+                         jQuery("#btnCollect").click(function() {
+                                                       var i;
+                                                       for(i = 0; i < 1000; i++){
+                                                         LONG_ARRAY.push(i);
+                                                       } 
+                                                     });
+
+                         VIS.init();
+                       });
 
 
 var LONG_ARRAY = [];

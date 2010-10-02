@@ -1,9 +1,21 @@
 /* style for the visualization container */  
 #infovis {  
     width:800px;  
-    height:600px;  
+    height:700px;  
     background-color:#1A1A1A;
+    border: 3px solid purple;
 }  
+#controls {
+    height: 20px;
+    padding-top: 2px;
+    background-color: gray;
+    font-size: small;
+}
+
+#controls span {
+    margin-right: 5px;
+}
+
 /* style for node labels */  
 .node {  
     color: white;  

@@ -4,13 +4,13 @@ function isDomElement(obj) {
 }
 
 Array.prototype.contains = function(obj) {
-  return this.indexOf(obj) != -1
+  return this.indexOf(obj) != -1;
 }
 
 function JSVis(events) {
   var $ = jQuery;
-  var m_width = 1200;
-  var m_height = 700;
+  var m_width = 850;
+  var m_height = 720;
   var m_coloring = true;
   var m_noShowDups = true;
   var m_startingObject = {obj:window, name: "window"};
@@ -24,6 +24,45 @@ function JSVis(events) {
       return m_jsonList;
     },
     initVis : function(json) {
+      var $controls;
+      var that = this;
+      $("body").append("<div id='infovis'></div>");
+
+      $("#infovis").draggable();
+      $("#infovis").css("width", m_width);
+      $("#infovis").css("height", m_height);
+      jQuery("#infovis").prepend("<div id='controls'><form><span>Width: <input type=\"text\" name=\"width\"></span><span>Height: <input type=\"text\" name=\"height\"></span><span>Depth: <input type=\"text\" name=\"depth\"></span><span>Object: <input type=\"text\" name=\"start\"></span><span><input type=\"button\" name=\"refresh\" value=\"refresh\"></span></form></div>");
+      $controls = $("#controls");
+
+      $("#controls input[type=text]").css("width", 30);
+      $("#controls input[name=start]").css("width", 80);
+      $("#controls input").css("border", "1px solid black");
+      $("#controls input[name=width]").val(m_width);
+      $("#controls input[name=height]").val(m_height);
+      $("#controls input[name=depth]").val(m_maxDepth);
+      $("#controls input[name=start]").val(m_startingObject.name);
+
+      $("#controls").keypress(function(e) {
+        if(e.which === 13) { // enter
+          $("#controls input[name=refresh]").trigger("click");
+        }
+      });
+
+      $("#controls input[name=refresh]").click(function(e) {
+        var width = $("#controls input[name='width']").val();
+        var height = $("#controls input[name='height']").val();
+        var depth = $("#controls input[name='depth']").val();
+        var start = $("#controls input[name='start']").val();
+        m_width = parseInt(width);
+        m_height = parseInt(height);
+
+        m_startingObject.name = start;
+        m_startingObject.obj = window[start];
+        m_maxDepth = parseInt(depth);
+        m_jsonList.push(that.gatherData());
+        that.refreshVis();
+      });
+
       m_canvas = new Canvas('mycanvas', {
         'injectInto': 'infovis',
         'width' : m_width,
@@ -166,6 +205,7 @@ function JSVis(events) {
     refreshVis : function() {
       $("#infovis").css("width", m_width);
       $("#infovis").css("height", m_height);
+      $("#controls").css("width", m_width);
 
       m_canvas.resize(m_width, m_height);
       m_graph.fx.clearLabels(true);
@@ -174,42 +214,6 @@ function JSVis(events) {
     },
     
     initControls : function() {
-      var that = this;
-      $("#controls").draggable();
-      $(".control input[name='width']").val(m_width);
-      $(".control input[name='height']").val(m_height);
-      $(".control input[name='depth']").val(m_maxDepth);
-      $(".control input[name='start']").val(m_startingObject.name);
-      $(".control input[name='coloring']").attr("checked", m_coloring);
-      $(".control input[name='dups']").attr("checked", !m_noShowDups);
-
-      $("#infovis").css("width", m_width);
-      $("#infovis").css("height", m_height);
-
-      $("#controls").keypress(function(e) {
-        if(e.which === 13) { // enter
-          $("#btnRefresh").trigger("click");
-        }
-      });
-
-      $("#btnRefresh").click(function(e) {
-        var width = $(".control input[name='width']").val();
-        var height = $(".control input[name='height']").val();
-        var depth = $(".control input[name='depth']").val();
-        var start = $(".control input[name='start']").val();
-        var coloring = $(".control input[name='coloring']").attr("checked");
-        var no_show_dups = !$(".control input[name='dups']").attr("checked");
-        m_width = parseInt(width);
-        m_height = parseInt(height);
-        m_coloring = coloring;
-        m_noShowDups = no_show_dups;
-
-        m_startingObject.name = start;
-        m_startingObject.obj = window[start];
-        m_maxDepth = parseInt(depth);
-        m_jsonList.push(that.gatherData());
-        that.refreshVis();
-      });
     },
 
     init : function() {
@@ -221,6 +225,7 @@ function JSVis(events) {
       m_jsonList.push(json);
       this.initVis(json);
 
+/*
       $.each(events, function(i, eventObj) {
         $(eventObj.selector).bind(eventObj.event,function() {
           var json = that.gatherData();
@@ -234,7 +239,9 @@ function JSVis(events) {
                                      + "</a></li>");
         });
       });
+*/
 
+      /*
       $("#changeList ul").append("<li><a data-index='0' href='#'>initial</a></li>");
 
       $("#changeList a").live("click", function(e) {
@@ -244,6 +251,7 @@ function JSVis(events) {
         var newJson = m_jsonList[index];
         m_graph.op.morph(newJson, {type: 'fade'});
       });
+       */
     }
-  }
+  };
 };
